@@ -31,7 +31,7 @@ Storage.prototype.add = function(name){
   this.items.push(item);
   this.id += 1;
   console.log(item);
-  console.log("item list " + this.items);
+  //console.log("item list " + this.items[item.name] + " " + this.items[item.id]);
   return item;
 };
 
@@ -50,8 +50,6 @@ Storage.prototype.delete = function(idToRemove){
     this.items = list.slice(0, indexOfIDToRemove).concat(list.slice(indexOfIDToRemove + 1));
   }
   return hasFoundItem;
-  //console.log(id);
-  //return this.items;
 };
 
 var storage = new Storage();
