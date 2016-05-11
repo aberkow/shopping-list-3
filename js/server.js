@@ -36,35 +36,42 @@ Storage.prototype.add = function(name){
 };
 
 //takes in the id of an item and uses splice to remove/return the new array.
-// Storage.prototype.delete = function(idToRemove){
-//   var indexOfIDToRemove;
-//   var hasFoundItem = false;
-//   this.items.some(function (item, index, array){
-//     if (item.id === idToRemove){
-//       indexOfIDToRemove = index;
-//       hasFoundItem = true;
-//       return true;
-//     }
-//   });
-//   if (hasFoundItem){
-//     this.items = list.slice(0, indexOfIDToRemove).concat(list.slice(indexOfIDToRemove + 1));
-//   }
-//   return hasFoundItem;
-// };
-
-Storage.prototype.delete = function(idOfItem){
-  var idToRemove = idOfItem;
-  var objectAtIndex;
-  for (var i = 0; i < this.items.length; i++){
-    if (this.items[i].id === idToRemove){
-      objectAtIndex = this.items[i];
+Storage.prototype.delete = function(idToRemove){
+  var indexOfIDToRemove;
+  var hasFoundItem = false;
+  this.items.some(function (item, index, array){
+    if (item.id.toString() === idToRemove.toString()){
+      indexOfIDToRemove = index;
+      hasFoundItem = true;
+      return true;
     }
-    console.log("objectAtIndex " + objectAtIndex);
+  });
+  //debugger;
+  if (hasFoundItem){
+    console.log(this.items);
+    this.items = this.items.slice(0, indexOfIDToRemove).concat(this.items.slice(indexOfIDToRemove + 1));
+    debugger;
   }
-  //this.items.includes(idOfItem);
-  //code below slices out an item from the array at an index supplied as an argument.
-  //return this.items = this.items.slice(0, idOfItem).concat(this.items.slice(idOfItem + 1));
+  return hasFoundItem;
+  //return this.items;
 };
+
+// Storage.prototype.delete = function(array, key, idToRemove){
+//   for (var i = 0; i < this.items.length; i++){
+//     if (array[i][key] === idToRemove){
+//       return i;
+//     }
+//   }
+//   return null;
+//
+//   //this.items[index]
+//
+//
+//
+//   //this.items.includes(idOfItem);
+//   //code below slices out an item from the array at an index supplied as an argument.
+//   //return this.items = this.items.slice(0, idOfItem).concat(this.items.slice(idOfItem + 1));
+// };
 
 var storage = new Storage();
 storage.add('Broad beans');
@@ -100,8 +107,12 @@ function(request, result){
   if (!request.body){
     return result.sendStatus(400);
   }
+  //debugger;
   var idOfItem = request.params.id;
   console.log("id of item " + idOfItem);
+  //this.items = storage.delete(idOfItem);
+  
+  //result.status(201).json(idOfItem);
   return result.status(storage.delete(idOfItem) ? 200 : 404);
 
 

@@ -135,6 +135,7 @@ ShoppingList.prototype.getItems = function() {
         type: 'GET',
         dataType: 'json'
     });
+
     ajax.done(this.onGetItemsDone.bind(this));
 };
 ShoppingList.prototype.addItem = function(name) {
@@ -152,7 +153,10 @@ ShoppingList.prototype.deleteItem = function(id) {
         type: 'DELETE',
         dataType: 'json'
     });
-    ajax.done(this.getItems.bind(this));
+    ajax.done(function(){
+      debugger;
+      this.getItems.bind(this);
+    });
 };
 ShoppingList.prototype.editItem = function(id, name) {
     var item = {'name': name, 'id': id};
