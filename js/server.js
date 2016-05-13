@@ -47,7 +47,7 @@ Storage.prototype.delete = function(idToRemove){
     }
   });
   if (hasFoundItem){
-    this.items = list.slice(0, indexOfIDToRemove).concat(list.slice(indexOfIDToRemove + 1));
+    this.items = this.items.slice(0, indexOfIDToRemove).concat(this.items.slice(indexOfIDToRemove + 1));
   }
   return hasFoundItem;
 };
@@ -88,6 +88,7 @@ function(request, result){
   }
   var idOfItem = request.params.id;
   console.log("id of item " + idOfItem);
+  debugger;
   return result.status(storage.delete(idOfItem) ? 200 : 404);
 
 
