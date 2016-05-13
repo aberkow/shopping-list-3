@@ -19,7 +19,7 @@ var Storage = function(){
 
 //var index = this.items[index]
 
-var list = [];
+//var list = [];
 
 
 Storage.prototype.add = function(name){
@@ -40,17 +40,43 @@ Storage.prototype.delete = function(idToRemove){
   var indexOfIDToRemove;
   var hasFoundItem = false;
   this.items.some(function (item, index, array){
-    if (item.id === idToRemove){
+    if (item.id.toString() === idToRemove.toString()){
       indexOfIDToRemove = index;
       hasFoundItem = true;
       return true;
     }
   });
+  //debugger;
   if (hasFoundItem){
+    console.log(this.items);
     this.items = this.items.slice(0, indexOfIDToRemove).concat(this.items.slice(indexOfIDToRemove + 1));
+    debugger;
   }
   return hasFoundItem;
+  //return this.items;
 };
+
+// Storage.prototype.delete2 = function(idToRemove){
+//   var foundIt = false;
+//   for (var i = 0; i < this.items.length; i++){
+//     for (var prop in this.items[i]){
+//       if (this.items[i][prop] === idToRemove){
+//         foundIt = true;
+//         break; //does this stop the loop?
+//       }
+//     }
+//     if (foundIt){
+//       this.items = this.items.slice(0, idToRemove).concat(this.items.slice(idToRemove + 1));
+//     }
+//   }
+//   console.log(this.items);
+//   debugger;
+//   return foundIt;
+// }
+
+// Storage.prototype.put = function(name, id){
+//
+// };
 
 var storage = new Storage();
 storage.add('Broad beans');
@@ -86,15 +112,28 @@ function(request, result){
   if (!request.body){
     return result.sendStatus(400);
   }
+  //debugger;
   var idOfItem = request.params.id;
   console.log("id of item " + idOfItem);
-  debugger;
+
+  //this.items = storage.delete(idOfItem);
+
+  //result.status(201).json(idOfItem);
   return result.status(storage.delete(idOfItem) ? 200 : 404);
 
 
   // var itemToDelete = storage.delete(idOfItem);
   // result.status(200).json(itemToDelete);
 });
+
+// app.delete('/items/:id', jsonParser, function(request, result){
+//   if (!request.body){
+//     return result.sendStatus(400);
+//   }
+//   var idOfItem = request.params.id;
+//   console.log("id of item " + idOfItem);
+//   return result.status(storage.delete2(idOfItem) ? 200 : 404);
+// });
 
 app.listen(4000, 'localhost', function(){
   console.log('Exress listening on port 4000');
