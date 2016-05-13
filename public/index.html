@@ -129,6 +129,7 @@ ShoppingList.prototype.onEditFocusOut = function(event) {
 ShoppingList.prototype.onDeleteItemClicked = function(event) {
     var id = $(event.target).parents('li').data('id');
     this.deleteItem(id);
+
 };
 ShoppingList.prototype.getItems = function() {
     var ajax = $.ajax('/items', {
@@ -149,14 +150,18 @@ ShoppingList.prototype.addItem = function(name) {
     ajax.done(this.getItems.bind(this));
 };
 ShoppingList.prototype.deleteItem = function(id) {
-    var ajax = $.ajax('/items/' + id, {
+    //var ajax =
+
+    $.ajax('/items/' + id, {
         type: 'DELETE',
         dataType: 'json'
-    });
-    ajax.done(function(){
-      debugger;
-      this.getItems.bind(this);
-    });
+    }).done(this.getItems.bind(this));
+
+    //debugger;
+    // ajax.done(function(){
+    //   debugger;
+    //   this.getItems.bind(this);
+    // });
 };
 ShoppingList.prototype.editItem = function(id, name) {
     var item = {'name': name, 'id': id};

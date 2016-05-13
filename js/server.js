@@ -107,11 +107,8 @@ app.post('/items', jsonParser, function(request, result){
 //this function uses storage.delete as a callback. storage.delete wants an id as
 //an argument. maybe use the hello server model to get the value of the id property?
 //right now this deletes the first item in the list but not any random item selected.... getting closer.
-app.delete('/items/:id', jsonParser,
+app.delete('/items/:id',
 function(request, result){
-  if (!request.body){
-    return result.sendStatus(400);
-  }
   //debugger;
   var idOfItem = request.params.id;
   console.log("id of item " + idOfItem);
@@ -119,7 +116,8 @@ function(request, result){
   //this.items = storage.delete(idOfItem);
 
   //result.status(201).json(idOfItem);
-  return result.status(storage.delete(idOfItem) ? 200 : 404);
+  return result.status(storage.delete(idOfItem) ? 200 : 404).json({});
+  //return result.sendStatus(storage.delete(idOfItem) ? 200 : 404);
 
 
   // var itemToDelete = storage.delete(idOfItem);
