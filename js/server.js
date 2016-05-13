@@ -36,25 +36,25 @@ Storage.prototype.add = function(name){
 };
 
 //takes in the id of an item and uses splice to remove/return the new array.
-Storage.prototype.delete = function(idToRemove){
-  var indexOfIDToRemove;
-  var hasFoundItem = false;
-  this.items.some(function (item, index, array){
-    if (item.id.toString() === idToRemove.toString()){
-      indexOfIDToRemove = index;
-      hasFoundItem = true;
-      return true;
-    }
-  });
-  //debugger;
-  if (hasFoundItem){
-    console.log(this.items);
-    this.items = this.items.slice(0, indexOfIDToRemove).concat(this.items.slice(indexOfIDToRemove + 1));
-    debugger;
-  }
-  return hasFoundItem;
-  //return this.items;
-};
+// Storage.prototype.delete = function(idToRemove){
+//   var indexOfIDToRemove;
+//   var hasFoundItem = false;
+//   this.items.some(function (item, index, array){
+//     if (item.id.toString() === idToRemove.toString()){
+//       indexOfIDToRemove = index;
+//       hasFoundItem = true;
+//       return true;
+//     }
+//   });
+//   //debugger;
+//   if (hasFoundItem){
+//     console.log(this.items);
+//     this.items = this.items.slice(0, indexOfIDToRemove).concat(this.items.slice(indexOfIDToRemove + 1));
+//     debugger;
+//   }
+//   return hasFoundItem;
+//   //return this.items;
+// };
 
 // Storage.prototype.delete2 = function(idToRemove){
 //   var foundIt = false;
@@ -107,33 +107,31 @@ app.post('/items', jsonParser, function(request, result){
 //this function uses storage.delete as a callback. storage.delete wants an id as
 //an argument. maybe use the hello server model to get the value of the id property?
 //right now this deletes the first item in the list but not any random item selected.... getting closer.
-app.delete('/items/:id', jsonParser,
-function(request, result){
-  if (!request.body){
-    return result.sendStatus(400);
-  }
-  //debugger;
-  var idOfItem = request.params.id;
-  console.log("id of item " + idOfItem);
-
-  //this.items = storage.delete(idOfItem);
-
-  //result.status(201).json(idOfItem);
-  return result.status(storage.delete(idOfItem) ? 200 : 404);
-
-
-  // var itemToDelete = storage.delete(idOfItem);
-  // result.status(200).json(itemToDelete);
-});
-
-// app.delete('/items/:id', jsonParser, function(request, result){
+// app.delete('/items/:id', jsonParser,
+// function(request, result){
 //   if (!request.body){
 //     return result.sendStatus(400);
 //   }
+//
 //   var idOfItem = request.params.id;
 //   console.log("id of item " + idOfItem);
-//   return result.status(storage.delete2(idOfItem) ? 200 : 404);
+//
+//   return result.status(storage.delete(idOfItem) ? 200 : 404);
 // });
+
+app.delete('/items/:id', jsonParser, function(request, result){
+  itemID = parseInt(request.params.id, 10);
+
+  for (var i = 0; i < storage.items.length; i++){
+    if (storage.items[i].id === itemID){
+      var item = storage.items[i];
+      result.sendStatus(201).json(item);
+      storage.items.splice(i, 1);
+      return result;
+    }
+  }
+  return result.sendStatus(404);
+});
 
 app.listen(4000, 'localhost', function(){
   console.log('Exress listening on port 4000');
