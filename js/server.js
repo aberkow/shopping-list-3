@@ -56,21 +56,26 @@ Storage.prototype.delete = function(idToRemove){
   //return this.items;
 };
 
-// Storage.prototype.delete = function(array, key, idToRemove){
+// Storage.prototype.delete2 = function(idToRemove){
+//   var foundIt = false;
 //   for (var i = 0; i < this.items.length; i++){
-//     if (array[i][key] === idToRemove){
-//       return i;
+//     for (var prop in this.items[i]){
+//       if (this.items[i][prop] === idToRemove){
+//         foundIt = true;
+//         break; //does this stop the loop?
+//       }
+//     }
+//     if (foundIt){
+//       this.items = this.items.slice(0, idToRemove).concat(this.items.slice(idToRemove + 1));
 //     }
 //   }
-//   return null;
+//   console.log(this.items);
+//   debugger;
+//   return foundIt;
+// }
+
+// Storage.prototype.put = function(name, id){
 //
-//   //this.items[index]
-//
-//
-//
-//   //this.items.includes(idOfItem);
-//   //code below slices out an item from the array at an index supplied as an argument.
-//   //return this.items = this.items.slice(0, idOfItem).concat(this.items.slice(idOfItem + 1));
 // };
 
 var storage = new Storage();
@@ -111,7 +116,7 @@ function(request, result){
   var idOfItem = request.params.id;
   console.log("id of item " + idOfItem);
   //this.items = storage.delete(idOfItem);
-  
+
   //result.status(201).json(idOfItem);
   return result.status(storage.delete(idOfItem) ? 200 : 404);
 
@@ -119,6 +124,15 @@ function(request, result){
   // var itemToDelete = storage.delete(idOfItem);
   // result.status(200).json(itemToDelete);
 });
+
+// app.delete('/items/:id', jsonParser, function(request, result){
+//   if (!request.body){
+//     return result.sendStatus(400);
+//   }
+//   var idOfItem = request.params.id;
+//   console.log("id of item " + idOfItem);
+//   return result.status(storage.delete2(idOfItem) ? 200 : 404);
+// });
 
 app.listen(4000, 'localhost', function(){
   console.log('Exress listening on port 4000');
