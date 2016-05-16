@@ -67,9 +67,10 @@ Storage.prototype.put = function(idToChange, newName){
     }
   });
   if (hasFoundItem){
-
     this.items[indexOfIDToChange].name = newName;
-    console.log(newName);
+    //console.log(newName);
+  } else {
+
   }
   return newName;
 }
@@ -114,7 +115,7 @@ app.put('/items/:id', jsonParser, function(request, result){
   }
   //debugger;
   console.log("PUT id of item " + idOfItem + "new name " + request.body.name);
-  debugger;
+  //debugger;
   return result.status(storage.put(idOfItem, request.body.name) ? 200 : 404).json({}); //what does the empty json object do here?
 });
 
