@@ -1,7 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
-//debugger;
 
 var Storage = function(){
   //creating one object suggested by Jim C. See note below
@@ -23,7 +22,7 @@ var Storage = function(){
 
 
 Storage.prototype.add = function(name){
-  //debugger;
+
   var item = {
     name: name,
     id: this.id
@@ -31,7 +30,6 @@ Storage.prototype.add = function(name){
   this.items.push(item);
   this.id += 1;
   console.log(item);
-  //console.log("item list " + this.items[item.name] + " " + this.items[item.id]);
   return item;
 };
 
@@ -46,37 +44,16 @@ Storage.prototype.delete = function(idToRemove){
       return true;
     }
   });
-  //debugger;
+
   if (hasFoundItem){
     console.log(this.items);
     this.items = this.items.slice(0, indexOfIDToRemove).concat(this.items.slice(indexOfIDToRemove + 1));
     debugger;
   }
   return hasFoundItem;
-  //return this.items;
+
 };
 
-// Storage.prototype.delete2 = function(idToRemove){
-//   var foundIt = false;
-//   for (var i = 0; i < this.items.length; i++){
-//     for (var prop in this.items[i]){
-//       if (this.items[i][prop] === idToRemove){
-//         foundIt = true;
-//         break; //does this stop the loop?
-//       }
-//     }
-//     if (foundIt){
-//       this.items = this.items.slice(0, idToRemove).concat(this.items.slice(idToRemove + 1));
-//     }
-//   }
-//   console.log(this.items);
-//   debugger;
-//   return foundIt;
-// }
-
-// Storage.prototype.put = function(name, id){
-//
-// };
 
 var storage = new Storage();
 storage.add('Broad beans');
@@ -104,34 +81,26 @@ app.post('/items', jsonParser, function(request, result){
   result.status(201).json(item);
 });
 
-//this function uses storage.delete as a callback. storage.delete wants an id as
-//an argument. maybe use the hello server model to get the value of the id property?
-//right now this deletes the first item in the list but not any random item selected.... getting closer.
-app.delete('/items/:id',
-function(request, result){
-  //debugger;
+app.delete('/items/:id', function(request, result){
   var idOfItem = request.params.id;
   console.log("id of item " + idOfItem);
-
-  //this.items = storage.delete(idOfItem);
-
-  //result.status(201).json(idOfItem);
   return result.status(storage.delete(idOfItem) ? 200 : 404).json({});
-  //return result.sendStatus(storage.delete(idOfItem) ? 200 : 404);
 
-
-  // var itemToDelete = storage.delete(idOfItem);
-  // result.status(200).json(itemToDelete);
 });
 
-// app.delete('/items/:id', jsonParser, function(request, result){
-//   if (!request.body){
-//     return result.sendStatus(400);
-//   }
-//   var idOfItem = request.params.id;
-//   console.log("id of item " + idOfItem);
-//   return result.status(storage.delete2(idOfItem) ? 200 : 404);
-// });
+//this is what Grae had. Try to improve.
+app.put('/items/:id', jsonParser, function(request, result){
+  var idOfItem = request.params.id;
+  for (i = 0; i < storage.items.length; i++){
+    if (storage.items[i].id === idOfItem){
+      storage.items[i].name = request.body.name;
+      result.status(201).json(storage.items[i]);
+      return result;
+    }
+  }
+  return result.sendStatus(404);
+});
+
 
 app.listen(4000, 'localhost', function(){
   console.log('Exress listening on port 4000');
