@@ -51,9 +51,28 @@ Storage.prototype.delete = function(idToRemove){
     debugger;
   }
   return hasFoundItem;
-
 };
+/*
+FInd the item at the index and change the name property of this.item. If there is no id at that point, create a new ID and add the name to it ------- What's the difference between this and POST? Why use POST?
+*/
+Storage.prototype.put = function(idToChange, newName){
+  var indexOfIDToChange;
+  var hasFoundItem = false;
+  var newName;
+  this.items.some(function(item, index, array){
+    if (item.id.toString() === idToChange.toString()){
+      indexOfIDToChange = index;
+      hasFoundItem = true;
+      return true;
+    }
+  });
+  if (hasFoundItem){
 
+    this.items[indexOfIDToChange].name = newName;
+    console.log(newName);
+  }
+  return newName;
+}
 
 var storage = new Storage();
 storage.add('Broad beans');
@@ -83,24 +102,21 @@ app.post('/items', jsonParser, function(request, result){
 
 app.delete('/items/:id', function(request, result){
   var idOfItem = request.params.id;
-  console.log("id of item " + idOfItem);
+  console.log("DELETE id of item " + idOfItem);
   return result.status(storage.delete(idOfItem) ? 200 : 404).json({});
 
 });
 
-//this is what Grae had. Try to improve.
 app.put('/items/:id', jsonParser, function(request, result){
   var idOfItem = request.params.id;
-  for (i = 0; i < storage.items.length; i++){
-    if (storage.items[i].id === idOfItem){
-      storage.items[i].name = request.body.name;
-      result.status(201).json(storage.items[i]);
-      return result;
-    }
+  if (!request.body){
+    return result.sendStatus(400);
   }
-  return result.sendStatus(404);
+  //debugger;
+  console.log("PUT id of item " + idOfItem + "new name " + request.body.name);
+  debugger;
+  return result.status(storage.put(idOfItem, request.body.name) ? 200 : 404).json({}); //what does the empty json object do here?
 });
-
 
 app.listen(4000, 'localhost', function(){
   console.log('Exress listening on port 4000');
