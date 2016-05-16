@@ -3,23 +3,10 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 
 var Storage = function(){
-  //creating one object suggested by Jim C. See note below
-  // this.items = {
-  //   0: "carrots",
-  //   1: "something"
-  // };
   this.items = [];
   console.log(this.items);
   this.id = 0;
 };
-//empty string might be needed here but not on line 18
-// this.items[this.id + ''] = "something"
-// delete this.items[id];
-
-//var index = this.items[index]
-
-//var list = [];
-
 
 Storage.prototype.add = function(name){
 
@@ -70,7 +57,8 @@ Storage.prototype.put = function(idToChange, newName){
     this.items[indexOfIDToChange].name = newName;
     //console.log(newName);
   } else {
-
+    this.items[indexOfIDToChange].id = idToChange;
+    this.items[indexOfIDToChange].name = "Please add an item";
   }
   return newName;
 }
@@ -83,15 +71,23 @@ storage.add('Peppers');
 var app = express();
 app.use(express.static('public'));
 
+//GET a full list of all items
 app.get('/items', function(request, result){
   result.json(storage.items);
 });
 
-//it looks like this returns a number = how many ids there are starting at 1.
+//GET an individual item by id
 app.get('/items/:id', function(request, result){
-  result.json(storage.id);
+  var idToCheck = request.params.id;
+  for (var i = 0; i < storage.items.length; i++){
+    if (storage.items[i].id == idToCheck){
+      //console.log("matched " + storage.items[i]);
+      result.status(201).json(storage.items[i]);
+    }
+  }
 });
 
+//POST (add) an item to the list.
 app.post('/items', jsonParser, function(request, result){
   if (!request.body){
     return result.sendStatus(400);
@@ -101,24 +97,24 @@ app.post('/items', jsonParser, function(request, result){
   result.status(201).json(item);
 });
 
+//DELETE an item from the list (by id)
 app.delete('/items/:id', function(request, result){
   var idOfItem = request.params.id;
   console.log("DELETE id of item " + idOfItem);
   return result.status(storage.delete(idOfItem) ? 200 : 404).json({});
-
 });
 
+//PUT (change/add?) an item in the list by id
 app.put('/items/:id', jsonParser, function(request, result){
   var idOfItem = request.params.id;
   if (!request.body){
     return result.sendStatus(400);
   }
-  //debugger;
-  console.log("PUT id of item " + idOfItem + "new name " + request.body.name);
-  //debugger;
+  // console.log("PUT id of item " + idOfItem + "new name " + request.body.name);
   return result.status(storage.put(idOfItem, request.body.name) ? 200 : 404).json({}); //what does the empty json object do here?
 });
 
+//show which port the app is listening on
 app.listen(4000, 'localhost', function(){
   console.log('Exress listening on port 4000');
 });
