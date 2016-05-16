@@ -8,14 +8,21 @@ var Storage = function(){
   this.id = 0;
 };
 
-Storage.prototype.add = function(name){
-
+Storage.prototype.add = function(name, id){
+  //check if the id has been provided. If not generate id number.
   var item = {
     name: name,
-    id: this.id
+    //id: this.id
   };
+  if (id !== undefined || id !== null){
+    item.id = id;
+  } else {
+    item.id = this.id
+    this.id += 1;
+  }
+
   this.items.push(item);
-  this.id += 1;
+  //this.id += 1;
   console.log(item);
   return item;
 };
@@ -57,8 +64,7 @@ Storage.prototype.put = function(idToChange, newName){
     this.items[indexOfIDToChange].name = newName;
     //console.log(newName);
   } else {
-    this.items[indexOfIDToChange].id = idToChange;
-    this.items[indexOfIDToChange].name = "Please add an item";
+    this.add(newName);
   }
   return newName;
 }
@@ -79,11 +85,18 @@ app.get('/items', function(request, result){
 //GET an individual item by id
 app.get('/items/:id', function(request, result){
   var idToCheck = request.params.id;
-  for (var i = 0; i < storage.items.length; i++){
-    if (storage.items[i].id == idToCheck){
-      //console.log("matched " + storage.items[i]);
-      result.status(201).json(storage.items[i]);
+  var itemAtIndex = -1;
+  var responseBody;
+  storage.items.some(function (item, index, array){
+    if (idToCheck.toString() === item.id.toString()){
+      itemAtIndex = index;
+      return true;
     }
+  });
+  if (itemAtIndex === -1){
+    return result.sendStatus(404);
+  } else {
+    return result.status(200).json(storage.items[itemAtIndex]);
   }
 });
 
@@ -118,3 +131,6 @@ app.put('/items/:id', jsonParser, function(request, result){
 app.listen(4000, 'localhost', function(){
   console.log('Exress listening on port 4000');
 });
+
+exports.app = app;
+exports.storage = storage;

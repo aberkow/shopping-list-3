@@ -157,6 +157,7 @@ ShoppingList.prototype.deleteItem = function(id) {
 };
 ShoppingList.prototype.editItem = function(id, name) {
     var item = {'name': name, 'id': id};
+    debugger;
     var ajax = $.ajax('/items/' + id, {
         type: 'PUT',
         data: JSON.stringify(item),
