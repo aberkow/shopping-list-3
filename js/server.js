@@ -14,10 +14,11 @@ Storage.prototype.add = function(name, id){
     name: name,
     //id: this.id
   };
-  if (id !== undefined || id !== null){
-    item.id = id;
+  if (id === undefined || id == null){
+    item.id = this.id;
+    this.id += 1;
   } else {
-    item.id = this.id
+    item.id = id;
     this.id += 1;
   }
 
@@ -70,9 +71,9 @@ Storage.prototype.put = function(idToChange, newName){
 }
 
 var storage = new Storage();
-storage.add('Broad beans');
-storage.add('Tomatoes');
-storage.add('Peppers');
+storage.add('Broad beans', 0);
+storage.add('Tomatoes', 1);
+storage.add('Peppers', 2);
 
 var app = express();
 app.use(express.static('public'));
@@ -106,7 +107,7 @@ app.post('/items', jsonParser, function(request, result){
     return result.sendStatus(400);
   }
 
-  var item = storage.add(request.body.name);
+  var item = storage.add(request.body.name, request.body.id);
   result.status(201).json(item);
 });
 
