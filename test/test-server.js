@@ -28,7 +28,7 @@ describe('Shopping list', function(){
           done();
         });
   });
-  /*
+
   it('should list an individual item on GET by id', function(done){
     chai.request(app)
         .get('/items/id')
@@ -45,11 +45,11 @@ describe('Shopping list', function(){
           res.body[0].name.should.equal('Broad beans');
         });
   });
-  */
+  
   it('should add an item on POST'), function(done){
     chai.request(app)
         .post('/items')
-        .send({name: 'Kale'});
+        .send({'name': 'Kale'})
         .end(function(err, res){
           should.equal(err, null);
           res.should.have.status(201);
@@ -60,7 +60,14 @@ describe('Shopping list', function(){
           res.body.name.should.be.a('string');
           res.body.id.should.be.a('number');
           res.body.name.should.equal('Kale');
-          storage.items.should.have.length('4')
+          storage.items.should.have.length(4)
+          storage.items[3].should.be.a('object');
+          storage.items[3].should.have.property('id');
+          storage.items[3].should.have.property('name');
+          storage.items[3].id.should.be.a('number');
+          storage.items[3].name.should.be.a('string');
+          storage.itesm[3].name.should.equal('Kale');
+          done();
         });
   };
   it('should edit an item on PUT');
