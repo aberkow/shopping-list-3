@@ -103,11 +103,13 @@ app.get('/items/:id', function(request, result){
 
 //POST (add) an item to the list.
 app.post('/items', jsonParser, function(request, result){
+  //console.log(arguments);
   if (!request.body){
     return result.sendStatus(400);
   }
 
   var item = storage.add(request.body.name, request.body.id);
+
   result.status(201).json(item);
 });
 
