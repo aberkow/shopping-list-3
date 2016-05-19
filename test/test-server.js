@@ -72,9 +72,44 @@ describe('Shopping list', function(){
           done();
         });
   });
+  //follow up here. something about this doesn't seem right even though it works.
   it('should edit an item on PUT', function(){
-    
+    chai.request(app)
+      .put('/items/2')
+      .send({'name': 'apple'})
+      .end(function(err, res){
+        res.should.have.status(200);
+        res.body.should.be.json;
+        res.body.should.be.a('object');
+        res.body.should.have.property('name');
+        res.body.should.have.property('id');
+        res.body.name.should.be.a('string');
+        res.body.id.should.be.a('number');
+        res.body.name.should.equal('apple');
+        console.log("put request " + res.body.name);
+        done();
+      });
   });
-  it('should delete an item on DELETE');
-  it('should return 404 if you DELETE an item that doesn\'t exist');
+  it('should delete an item on DELETE', function(done){
+    chai.request(app)
+        .delete('/items/1')
+        .end(function(err, res){
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.not.have.property('name');
+          res.body.should.not.have.property('id');
+          storage.items.should.have.length(3);
+          // res.body.should.have.property('name');
+          // res.body.should.have.property('id');
+          done();
+        })
+  });
+  it('should return 404 if you DELETE an item that doesn\'t exist', function(done){
+    chai.request(app)
+        .delete('/items/99')
+        .end(function(err, res){
+          res.should.have.status(404);
+          done();
+        });
+  });
 });
